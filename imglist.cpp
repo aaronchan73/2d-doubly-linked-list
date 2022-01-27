@@ -62,7 +62,9 @@ ImgList::ImgList(PNG& img) {
   // case 7: right: 1
   // case 8: bottom right: 2 // instantiate
   // ImgNode *vert;
-  ImgNode *top;
+  ImgNode *left;
+  ImgNode *top_to_bottom;
+  ImgNode *top_tracker;
 
   for(unsigned int x = 0; x < img.width(); x++) {
      for(unsigned int y = 0; y < img.height(); y++) {
@@ -70,16 +72,19 @@ ImgList::ImgList(PNG& img) {
             HSLAPixel *pixel = img.getPixel(0,0);
             northwest = new ImgNode();
             northwest->colour = *pixel;
-            top = northwest;
+            left = northwest;
           } else if (x == img.width() - 1 && y == img.height() - 1) {
             HSLAPixel *pixel = img.getPixel(img.width() - 1,img.height() - 1);
             southeast = new ImgNode();
             southeast->colour = *pixel;
-          } else {
+          } else if (x == 0) {
             HSLAPixel *pixel = img.getPixel(x,y);
-            ImgNode *node = new ImgNode();
-            node->north = top;
-            top = node;
+            ImgNode *nodexzero = new ImgNode();
+            node->north = left;
+            left = node;
+          } else {
+            left = northwest;
+            HSLAPixel *pixel = img.getPixel(x,y);
           }
        }
      }
