@@ -62,30 +62,66 @@ ImgList::ImgList(PNG& img) {
   // case 7: right: 1
   // case 8: bottom right: 2 // instantiate
   // ImgNode *vert;
+  ImgNode *right;
   ImgNode *left;
-  ImgNode *top_to_bottom;
-  ImgNode *top_tracker;
 
   for(unsigned int x = 0; x < img.width(); x++) {
      for(unsigned int y = 0; y < img.height(); y++) {
+          HSLAPixel *pixel = img.getPixel(x,y);
+          ImgNode *node = new ImgNode();
           if (x == 0 && y == 0) {
-            HSLAPixel *pixel = img.getPixel(0,0);
-            northwest = new ImgNode();
+            // northwest node 
+            // (0, 0)
+            northwest = node;
             northwest->colour = *pixel;
             left = northwest;
+            right = northwest;
           } else if (x == img.width() - 1 && y == img.height() - 1) {
-            HSLAPixel *pixel = img.getPixel(img.width() - 1,img.height() - 1);
-            southeast = new ImgNode();
+            // southeast node
+            // (width - 1, height - 1)
+            left = left->south;
+
+            southeast = node;
+
+            left->east = southeast;
+            southeast->west = left;
+            
+            right->south = southeast;
+            southeast->north = right;
+
             southeast->colour = *pixel;
           } else if (x == 0) {
-            HSLAPixel *pixel = img.getPixel(x,y);
-            ImgNode *nodexzero = new ImgNode();
-            node->north = left;
-            left = node;
+            // (0, 1)
+            node->north = right;
+            right = node;
+            node->colour = *pixel;
+          } else if (y == 0) {
+            // (1, 0)
+            right = node;
+            // set up left/right pointers
+            node->west = left;
+            left->east = node;
+            node->colour = *pixel;
           } else {
-            left = northwest;
-            HSLAPixel *pixel = img.getPixel(x,y);
-          }
+            // (1, 1)
+
+            // moves left pointer down one node to match y of current node
+            left = left->south;
+            
+            //left/right pointer
+            left->east = node;
+            node->west = left;
+            
+            //up/down pointer
+            right->south = node;
+            node->north = right;
+
+            //colour
+            node->colour = *pixel;
+            
+            // moves right pointer down one node to match y of current node
+            right = node;
+          } 
        }
      }
   }
