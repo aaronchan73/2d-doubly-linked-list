@@ -64,6 +64,7 @@ ImgList::ImgList(PNG& img) {
   // ImgNode *vert;
   ImgNode *right;
   ImgNode *left;
+  ImgNode *top;
 
   for(unsigned int x = 0; x < img.width(); x++) {
      for(unsigned int y = 0; y < img.height(); y++) {
@@ -76,6 +77,7 @@ ImgList::ImgList(PNG& img) {
             northwest->colour = *pixel;
             left = northwest;
             right = northwest;
+            top = northwest;
           } else if (x == img.width() - 1 && y == img.height() - 1) {
             // southeast node
             // (width - 1, height - 1)
@@ -92,15 +94,28 @@ ImgList::ImgList(PNG& img) {
             southeast->colour = *pixel;
           } else if (x == 0) {
             // (0, 1)
+
+            // up/down pointers
             node->north = right;
+            right->south = node;
+
+            // moves right pointer down one node to match y of current node
             right = node;
+
+            // colour
             node->colour = *pixel;
           } else if (y == 0) {
             // (1, 0)
             right = node;
             // set up left/right pointers
-            node->west = left;
-            left->east = node;
+            node->west = top;
+            top->east = node;
+
+            //set to be equal to right
+            left = top;
+            top = node;
+            
+            //colour 
             node->colour = *pixel;
           } else {
             // (1, 1)
