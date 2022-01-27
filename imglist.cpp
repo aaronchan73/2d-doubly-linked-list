@@ -40,7 +40,10 @@ double HueDiff(double hue1, double hue2) {
 */
 ImgList::ImgList() {
   // set appropriate values for all member attributes here
-  
+  // create img node
+  // set attributes
+  northwest = NULL;
+  southeast = NULL;
 }
 
 /*
@@ -49,8 +52,39 @@ ImgList::ImgList() {
 */
 ImgList::ImgList(PNG& img) {
   // build the linked node structure and set the member attributes appropriately
-  
-}
+  // grab each pixel, set each pixel to it's specific pointer direction....
+  // case 1: top left; 2 pointers to be different // instantiate 
+  // case 2: normal left: 1 pointer
+  // case 3: bottom left: 2 pointers
+  // case 4: top normal: 1 
+  // case: 5: bottom normal: 1
+  // case 6: top right: 2
+  // case 7: right: 1
+  // case 8: bottom right: 2 // instantiate
+  // ImgNode *vert;
+  ImgNode *top;
+
+  for(unsigned int x = 0; x < img.width(); x++) {
+     for(unsigned int y = 0; y < img.height(); y++) {
+          if (x == 0 && y == 0) {
+            HSLAPixel *pixel = img.getPixel(0,0);
+            northwest = new ImgNode();
+            northwest->colour = *pixel;
+            top = northwest;
+          } else if (x == img.width() - 1 && y == img.height() - 1) {
+            HSLAPixel *pixel = img.getPixel(img.width() - 1,img.height() - 1);
+            southeast = new ImgNode();
+            southeast->colour = *pixel;
+          } else {
+            HSLAPixel *pixel = img.getPixel(x,y);
+            ImgNode *node = new ImgNode();
+            node->north = top;
+            top = node;
+          }
+       }
+     }
+  }
+
 
 /*
 * Copy constructor.
@@ -102,6 +136,8 @@ ImgList::~ImgList() {
 */
 unsigned int ImgList::GetDimensionX() const {
   // replace the following line with your implementation
+
+  unsigned int ans = 0;
   return -1;
 }
 
