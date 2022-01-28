@@ -353,25 +353,27 @@ void ImgList::Carve(unsigned int rounds, int selectionmode) {
 void ImgList::Clear() {
   // add your implementation here
   
-  ImgNode* curr = northwest;
-  ImgNode* bottom = northwest->south;
-  ImgNode* top = northwest->east;
-   while(curr->east != NULL && curr->south != NULL) {
-     delete(curr);
-     curr = bottom;
-     bottom->south = bottom;
-     if (curr->south == NULL) {
-       curr = top;
-       bottom = curr->south;
-       top = top->east;
-     } 
-   }
-   delete(southeast);
-  northwest = NULL;
-  southeast = NULL;
-  curr = NULL;
-  bottom = NULL;
-  top = NULL;
+  // ImgNode* curr = northwest;
+  // ImgNode* bottom = northwest->south;
+  // ImgNode* top = northwest->east;
+  //  while(curr->east != NULL && curr->south != NULL) {
+  //    if (bottom == NULL) {
+  //      delete(curr);
+  //      curr = top;
+  //      bottom = curr->south;
+  //      top = top->east;
+  //    } else {
+  //     delete(curr);
+  //     curr = bottom;
+  //     bottom = bottom->south;
+  //    }
+  //  }
+  // delete(southeast);
+  // northwest = NULL;
+  // southeast = NULL;
+  // curr = NULL;
+  // bottom = NULL;
+  // top = NULL;
   }
 
 /* ************************
