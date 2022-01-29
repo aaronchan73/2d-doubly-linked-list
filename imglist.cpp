@@ -319,28 +319,29 @@ ImgNode* ImgList::SelectNode(ImgNode* rowstart, int selectionmode) {
 */
 void ImgList::Carve(int selectionmode) {
   // add your implementation here
-  ImgNode* rowstart = northwest;
-  if (selectionmode == 0) {
-    ImgNode* row = rowstart;
-    while (row != NULL) {
-      ImgNode* select = SelectNode(row, 0);
-      select->east->west = select->west;
-      select->west->east = select->east;
-      select->north->south = select->south;
+  ImgNode* row = northwest;
+  while (row != NULL) {
+    ImgNode* select = SelectNode(row, selectionmode);
+    select->east->west = select->west;
+    select->west->east = select->east;
+    if (select->north == NULL) {
+      select->south->north = NULL;
+      select->south->skipup += (select->skipup) + 1;
+    } else if (select->south == NULL) {
+      select->north->south = NULL;
+      select->north->skipdown += (select->skipdown) + 1;
+    } else {
       select->south->north = select->north;
-      select->east->skipright = 1;
-      select->west->skipleft = 1;
-      select->north->skipdown = 1;
-      select->south->skipup = 1;
-      delete(select);
-      select = NULL;
-      row = row->south;
+      select->north->south = select->south;
+      select->south->skipup += (select->skipup) + 1;
+      select->north->skipdown += (select->skipdown) + 1;
     }
-  } else if (selectionmode == 1) {
-
+    select->west->skipright = 1;
+    select->east->skipleft = 1;
+    delete(select);
+    select = NULL;
+    row = row->south;
   }
-
-  
 }
 
 // note that a node on the boundary will never be selected for removal
