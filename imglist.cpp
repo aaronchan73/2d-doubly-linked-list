@@ -270,8 +270,96 @@ unsigned int ImgList::GetDimensionFullX() const {
 */
 ImgNode* ImgList::SelectNode(ImgNode* rowstart, int selectionmode) {
   // add your implementation below
+  ImgNode* curr = rowstart->east;
+  ImgNode* ans = rowstart->east;
+  double ansHue = 0;
+  if (selectionmode == 0) {
+    while(curr->east != NULL) {
+      if (curr->colour.l < ans->colour.l) {
+        ans = curr;
+      }
+      curr = curr->east;
+    }
+  } else if (selectionmode == 1) {
+    while(curr->east != NULL) {
+      double hueCurr = curr->colour.h;
+      double hueWest = curr->west->colour.h;
+      double hueEast = curr->east->colour.h;
+
+      double diffWest = HueDiff(hueWest, hueCurr);
+      double diffEast = HueDiff(hueCurr, hueEast);
+      
+      double diffTotal = diffWest + diffEast;
+      if (ansHue == 0) {
+        ansHue = diffTotal;
+      }
+      if (diffTotal < ansHue) {
+        ansHue = diffTotal;
+        ans = curr;
+      }
+      curr = curr->east;
+    }
+  }
+  return ans;
+}
+
+/************
+* MODIFIERS *
+************/
+
+/*
+* Removes exactly one node from each row in this list, according to specified criteria.
+* The first and last nodes in any row cannot be carved.
+* PRE: this list has at least 3 nodes in each row
+* PRE: selectionmode is an integer in the range [0,1]
+* PARAM: selectionmode - see the documentation for the SelectNode function.
+* POST: this list has had one node removed from each row. Neighbours of the created
+*       gaps are linked appropriately, and their skip values are updated to reflect
+*       the size of the gap.
+*/
+void ImgList::Carve(int selectionmode) {
+  // add your implementation here
+  ImgNode* rowstart = northwest;
+  if (selectionmode == 0) {
+    ImgNode* row = rowstart;
+    while (row != NULL) {
+      ImgNode* select = SelectNode(row, 0);
+      select->east->west = select->west;
+      select->west->east = select->east;
+      select->north->south = select->south;
+      select->south->north = select->north;
+      select->east->skipright = 1;
+      select->west->skipleft = 1;
+      select->north->skipdown = 1;
+      select->south->skipup = 1;
+      delete(select);
+      select = NULL;
+      row = row->south;
+    }
+  } else if (selectionmode == 1) {
+
+  }
+
   
-  return NULL;
+}
+
+// note that a node on the boundary will never be selected for removal
+/*
+* Removes "rounds" number of nodes (up to a maximum of node width - 2) from each row,
+* based on specific selection criteria.
+* Note that this should remove one node from every row, repeated "rounds" times,
+* and NOT remove "rounds" nodes from one row before processing the next row.
+* PRE: selectionmode is an integer in the range [0,1]
+* PARAM: rounds - number of nodes to remove from each row
+*        If rounds exceeds node width - 2, then remove only node width - 2 nodes from each row.
+*        i.e. Ensure that the final list has at least two nodes in each row.
+* POST: this list has had "rounds" nodes removed from each row. Neighbours of the created
+*       gaps are linked appropriately, and their skip values are updated to reflect
+*       the size of the gap.
+*/
+void ImgList::Carve(unsigned int rounds, int selectionmode) {
+  // add your implementation here
+  
 }
 
 /*
@@ -304,45 +392,6 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
   
   return outpng;
 }
-
-/************
-* MODIFIERS *
-************/
-
-/*
-* Removes exactly one node from each row in this list, according to specified criteria.
-* The first and last nodes in any row cannot be carved.
-* PRE: this list has at least 3 nodes in each row
-* PRE: selectionmode is an integer in the range [0,1]
-* PARAM: selectionmode - see the documentation for the SelectNode function.
-* POST: this list has had one node removed from each row. Neighbours of the created
-*       gaps are linked appropriately, and their skip values are updated to reflect
-*       the size of the gap.
-*/
-void ImgList::Carve(int selectionmode) {
-  // add your implementation here
-  
-}
-
-// note that a node on the boundary will never be selected for removal
-/*
-* Removes "rounds" number of nodes (up to a maximum of node width - 2) from each row,
-* based on specific selection criteria.
-* Note that this should remove one node from every row, repeated "rounds" times,
-* and NOT remove "rounds" nodes from one row before processing the next row.
-* PRE: selectionmode is an integer in the range [0,1]
-* PARAM: rounds - number of nodes to remove from each row
-*        If rounds exceeds node width - 2, then remove only node width - 2 nodes from each row.
-*        i.e. Ensure that the final list has at least two nodes in each row.
-* POST: this list has had "rounds" nodes removed from each row. Neighbours of the created
-*       gaps are linked appropriately, and their skip values are updated to reflect
-*       the size of the gap.
-*/
-void ImgList::Carve(unsigned int rounds, int selectionmode) {
-  // add your implementation here
-  
-}
-
 
 /*
 * Helper function deallocates all heap memory associated with this list,
