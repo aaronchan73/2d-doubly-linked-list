@@ -388,8 +388,23 @@ void ImgList::Carve(unsigned int rounds, int selectionmode) {
 */
 PNG ImgList::Render(bool fillgaps, int fillmode) const {
   // Add/complete your implementation below
-  
-  PNG outpng; //this will be returned later. Might be a good idea to resize it at some point.
+  PNG *outpng = new PNG(GetDimensionX(), GetDimensionY()); //this will be returned later. Might be a good idea to resize it at some point.
+  ImgNode* curr = northwest;
+  ImgNode* bottom = northwest->south;
+  if (fillgaps) { // fillgaps == true
+    // TODO
+  } else { // fillgaps == false
+  for (unsigned x = 0; x < GetDimensionX(); x++) {
+    for (unsigned y = 0; y < GetDimensionY(); y++) {
+      HSLAPixel* pixel = new HSLAPixel(curr->colour.h, curr->colour.s, curr->colour.l, curr->colour.a);
+      *outpng->getPixel(x, y) = *pixel;
+      curr = curr->east;
+    }
+  }
+
+   
+     
+  }
   
   return outpng;
 }
