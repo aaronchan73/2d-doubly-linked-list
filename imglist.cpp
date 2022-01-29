@@ -388,22 +388,42 @@ void ImgList::Carve(unsigned int rounds, int selectionmode) {
 */
 PNG ImgList::Render(bool fillgaps, int fillmode) const {
   // Add/complete your implementation below
-  PNG *outpng = new PNG(GetDimensionX(), GetDimensionY()); //this will be returned later. Might be a good idea to resize it at some point.
-  ImgNode* curr = northwest;
-  ImgNode* bottom = northwest->south;
+  // PNG *outpng = new PNG(GetDimensionX(), GetDimensionY()); //this will be returned later. Might be a good idea to resize it at some point.
+  // ImgNode* curr = northwest;
+  // ImgNode* bottom = northwest->south;
   if (fillgaps) { // fillgaps == true
     // TODO
   } else { // fillgaps == false
-  for (unsigned x = 0; x < GetDimensionX(); x++) {
-    for (unsigned y = 0; y < GetDimensionY(); y++) {
+  // for (unsigned x = 0; x < GetDimensionX(); x++) {
+  //   for (unsigned y = 0; y < GetDimensionY(); y++) {
+  //     HSLAPixel* pixel = new HSLAPixel(curr->colour.h, curr->colour.s, curr->colour.l, curr->colour.a);
+  //     *outpng->getPixel(x, y) = *pixel;
+  //     curr = curr->east;
+  //   }
+  // }
+  PNG *outpng = new PNG(GetDimensionX(), GetDimensionY());
+  ImgNode* curr = northwest;
+  ImgNode* bottom = northwest->south;
+  ImgNode* top = northwest->east;
+   while(curr->east != NULL && curr->south != NULL) {
+     if (bottom == NULL) {
+       // reset back to next col
       HSLAPixel* pixel = new HSLAPixel(curr->colour.h, curr->colour.s, curr->colour.l, curr->colour.a);
       *outpng->getPixel(x, y) = *pixel;
-      curr = curr->east;
-    }
-  }
-
-   
-     
+       curr = top;
+       bottom = curr->south;
+       top = top->east;
+     } else {
+       // progress down in each row
+      HSLAPixel* pixel = new HSLAPixel(curr->colour.h, curr->colour.s, curr->colour.l, curr->colour.a);
+      *outpng->getPixel(x, y) = *pixel;
+      curr = bottom;
+      bottom = bottom->south;
+     }
+   }
+      // southeast case
+  HSLAPixel* pixel = new HSLAPixel(southeast->colour.h, southeast->colour.s, southeast->colour.l, southeast->colour.a);
+  *outpng->getPixel(x, y) = *pixel;
   }
   
   return outpng;
@@ -418,27 +438,30 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
 void ImgList::Clear() {
   // add your implementation here
   
-  // ImgNode* curr = northwest;
-  // ImgNode* bottom = northwest->south;
-  // ImgNode* top = northwest->east;
-  //  while(curr->east != NULL && curr->south != NULL) {
-  //    if (bottom == NULL) {
-  //      delete(curr);
-  //      curr = top;
-  //      bottom = curr->south;
-  //      top = top->east;
-  //    } else {
-  //     delete(curr);
-  //     curr = bottom;
-  //     bottom = bottom->south;
-  //    }
-  //  }
-  // delete(southeast);
-  // northwest = NULL;
-  // southeast = NULL;
-  // curr = NULL;
-  // bottom = NULL;
-  // top = NULL;
+  ImgNode* curr = northwest;
+  ImgNode* bottom = northwest->south;
+  ImgNode* top = northwest->east;
+   while(curr->east != NULL && curr->south != NULL) {
+     if (bottom == NULL) {
+       // reset back to next col
+       delete(curr);
+       curr = top;
+       bottom = curr->south;
+       top = top->east;
+     } else {
+       // progress down in each row
+      delete(curr);
+      curr = bottom;
+      bottom = bottom->south;
+     }
+   }
+      // southeast
+  delete(southeast);
+  northwest = NULL;
+  southeast = NULL;
+  curr = NULL;
+  bottom = NULL;
+  top = NULL;
   }
 
 /* ************************
