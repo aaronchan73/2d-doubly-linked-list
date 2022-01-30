@@ -359,8 +359,9 @@ void ImgList::Carve(int selectionmode) {
 *       the size of the gap.
 */
 void ImgList::Carve(unsigned int rounds, int selectionmode) {
-  // add your implementation here
-  
+  for (int x = 0; x < rounds; x++) {
+    Carve(selectionmode);
+  }
 }
 
 /*
@@ -388,44 +389,66 @@ void ImgList::Carve(unsigned int rounds, int selectionmode) {
 */
 PNG ImgList::Render(bool fillgaps, int fillmode) const {
   // Add/complete your implementation below
-  // PNG *outpng = new PNG(GetDimensionX(), GetDimensionY()); //this will be returned later. Might be a good idea to resize it at some point.
-  // ImgNode* curr = northwest;
-  // ImgNode* bottom = northwest->south;
+  PNG outpng;
   if (fillgaps) { // fillgaps == true
-    // TODO
+    outpng.resize(GetDimensionFullX(), GetDimensionY());  
+    if (fillmode == 0) {
+      ImgNode* curr = northwest;
+      ImgNode* row = northwest->south;
+      bool run = true;
+      int x = 0;
+      int y = 0;
+      while (run) {
+          HSLAPixel* pixel = new HSLAPixel(curr->colour.h, curr->colour.s, curr->colour.l, curr->colour.a);
+          *outpng.getPixel(x, y) = *pixel;
+          if (curr->skipright != 0) {
+          HSLAPixel* leftColour = new HSLAPixel(curr->colour.h, curr->colour.s, curr->colour.l, curr->colour.a);
+          while (curr->skipright > 0) { 
+              x++;
+              *outpng.getPixel(x, y) = *leftColour;
+              (curr->skipright)--;
+            }
+          }
+          curr = curr->east;
+          
+          //last iteration
+          x++;
+          if (curr == NULL && row == NULL) {
+          run = false;
+          } else if (curr == NULL) {
+            curr = row;
+            row = row->south;
+            y++;
+            x = 0;
+      }
+    }
+    } else if (fillmode == 1) {
+
+    }
   } else { // fillgaps == false
-  // for (unsigned x = 0; x < GetDimensionX(); x++) {
-  //   for (unsigned y = 0; y < GetDimensionY(); y++) {
-  //     HSLAPixel* pixel = new HSLAPixel(curr->colour.h, curr->colour.s, curr->colour.l, curr->colour.a);
-  //     *outpng->getPixel(x, y) = *pixel;
-  //     curr = curr->east;
-  //   }
-  // }
-  PNG *outpng = new PNG(GetDimensionX(), GetDimensionY());
+  outpng.resize(GetDimensionX(), GetDimensionY());
   ImgNode* curr = northwest;
-  ImgNode* bottom = northwest->south;
-  ImgNode* top = northwest->east;
-   while(curr->east != NULL && curr->south != NULL) {
-     if (bottom == NULL) {
-       // reset back to next col
+  ImgNode* row = northwest->south;
+  bool run = true;
+  int x = 0;
+  int y = 0;
+  while (run) {
       HSLAPixel* pixel = new HSLAPixel(curr->colour.h, curr->colour.s, curr->colour.l, curr->colour.a);
-      *outpng->getPixel(x, y) = *pixel;
-       curr = top;
-       bottom = curr->south;
-       top = top->east;
-     } else {
-       // progress down in each row
-      HSLAPixel* pixel = new HSLAPixel(curr->colour.h, curr->colour.s, curr->colour.l, curr->colour.a);
-      *outpng->getPixel(x, y) = *pixel;
-      curr = bottom;
-      bottom = bottom->south;
-     }
-   }
-      // southeast case
-  HSLAPixel* pixel = new HSLAPixel(southeast->colour.h, southeast->colour.s, southeast->colour.l, southeast->colour.a);
-  *outpng->getPixel(x, y) = *pixel;
+      *outpng.getPixel(x, y) = *pixel;
+      curr = curr->east;
+      //last iteration
+      x++;
+      if (curr == NULL && row == NULL) {
+        run = false;
+      } else if (curr == NULL) {
+        curr = row;
+        row = row->south;
+        y++;
+        x = 0;
+      }
+    }
   }
-  
+
   return outpng;
 }
 
@@ -438,30 +461,30 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
 void ImgList::Clear() {
   // add your implementation here
   
-  ImgNode* curr = northwest;
-  ImgNode* bottom = northwest->south;
-  ImgNode* top = northwest->east;
-   while(curr->east != NULL && curr->south != NULL) {
-     if (bottom == NULL) {
-       // reset back to next col
-       delete(curr);
-       curr = top;
-       bottom = curr->south;
-       top = top->east;
-     } else {
-       // progress down in each row
-      delete(curr);
-      curr = bottom;
-      bottom = bottom->south;
-     }
-   }
-      // southeast
-  delete(southeast);
-  northwest = NULL;
-  southeast = NULL;
-  curr = NULL;
-  bottom = NULL;
-  top = NULL;
+  // ImgNode* curr = northwest;
+  // ImgNode* bottom = northwest->south;
+  // ImgNode* top = northwest->east;
+  //  while(curr->east != NULL && curr->south != NULL) {
+  //    if (bottom == NULL) {
+  //      // reset back to next col
+  //      delete(curr);
+  //      curr = top;
+  //      bottom = curr->south;
+  //      top = top->east;
+  //    } else {
+  //      // progress down in each row
+  //     delete(curr);
+  //     curr = bottom;
+  //     bottom = bottom->south;
+  //    }
+  //  }
+  //     // southeast
+  // delete(southeast);
+  // northwest = NULL;
+  // southeast = NULL;
+  // curr = NULL;
+  // bottom = NULL;
+  // top = NULL;
   }
 
 /* ************************
