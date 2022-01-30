@@ -280,20 +280,17 @@ ImgNode* ImgList::SelectNode(ImgNode* rowstart, int selectionmode) {
       }
       curr = curr->east;
     }
-  } else if (selectionmode == 1) {
+  } else if (selectionmode == 1) { // TODO
     while(curr->east != NULL) {
       double hueCurr = curr->colour.h;
       double hueWest = curr->west->colour.h;
       double hueEast = curr->east->colour.h;
 
-      double diffWest = HueDiff(hueWest, hueCurr);
+      double diffWest = HueDiff(hueCurr, hueWest);
       double diffEast = HueDiff(hueCurr, hueEast);
-      
+
       double diffTotal = diffWest + diffEast;
-      if (ansHue == 0) {
-        ansHue = diffTotal;
-      }
-      if (diffTotal < ansHue) {
+      if (diffTotal < ansHue || curr->west->west == NULL) {
         ansHue = diffTotal;
         ans = curr;
       }
