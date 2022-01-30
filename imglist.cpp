@@ -356,7 +356,7 @@ void ImgList::Carve(int selectionmode) {
 *       the size of the gap.
 */
 void ImgList::Carve(unsigned int rounds, int selectionmode) {
-  for (int x = 0; x < rounds; x++) {
+  for (unsigned int x = 0; x < rounds; x++) {
     Carve(selectionmode);
   }
 }
