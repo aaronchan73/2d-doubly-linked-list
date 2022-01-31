@@ -321,13 +321,13 @@ void ImgList::Carve(int selectionmode) {
     ImgNode* select = SelectNode(row, selectionmode);
     select->east->west = select->west;
     select->west->east = select->east;
-    if (select->north == NULL) {
+    if (select->north == NULL && select->south != NULL) {
       select->south->north = NULL;
       select->south->skipup += (select->skipup) + 1;
-    } else if (select->south == NULL) {
+    } else if (select->south == NULL && select->north != NULL) {
       select->north->south = NULL;
       select->north->skipdown += (select->skipdown) + 1;
-    } else {
+    } else if (select->south != NULL & select->north != NULL) {
       select->south->north = select->north;
       select->north->south = select->south;
       select->south->skipup += (select->skipup) + 1;
