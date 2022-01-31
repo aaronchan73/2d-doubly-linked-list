@@ -397,10 +397,12 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
       int y = 0;
       while (run) {
           HSLAPixel* pixel = new HSLAPixel(curr->colour.h, curr->colour.s, curr->colour.l, curr->colour.a);
+          //HSLAPixel* = NULL;
           *outpng.getPixel(x, y) = *pixel;
           unsigned int skip = curr->skipright;
           if (skip != 0) {
           HSLAPixel* leftColour = pixel;
+          //leftColour = NULL;
           while (skip > 0) { 
               x++;
               *outpng.getPixel(x, y) = *leftColour;
@@ -433,14 +435,14 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
             double avgSat;
             double avgLum;
             double avgAlp;
-            double sumHue = (curr->west->colour.h + curr->east->colour.h);
+            double sumHue = (curr->colour.h + curr->east->colour.h); // if curr->west == NULL then can't call curr->west->colour
             while (sumHue > 360) {
               sumHue -= 360;
             }
             avgHue = sumHue / 2;
-            avgSat = curr->east->colour.s + curr->west->colour.s / 2;
-            avgLum = curr->east->colour.l + curr->west->colour.l / 2;
-            avgAlp = curr->east->colour.a + curr->west->colour.a / 2;
+            avgSat = curr->east->colour.s + curr->colour.s / 2;
+            avgLum = curr->east->colour.l + curr->colour.l / 2;
+            avgAlp = curr->east->colour.a + curr->colour.a / 2;
             
           HSLAPixel* average = new HSLAPixel(avgHue, avgSat, avgLum, avgAlp);
           while (skip > 0) { 
@@ -495,6 +497,30 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
 */
 void ImgList::Clear() {
   // add your implementation here
+  // ImgNode* curr = northwest;
+  // ImgNode* front = northwest->east;
+  // ImgNode* row = northwest->south;
+  // bool run = true;
+  // while (run) {
+  //     if (front == NULL && row == NULL) {
+  //       delete curr;
+  //       run = false;
+  //     } else if (front == NULL) {
+  //       delete(curr);
+  //       curr = row;
+  //       row = row->south;
+  //       front = curr->east;
+  //     } else {
+  //       delete(curr);
+  //       curr = front;
+  //       front = front->east;
+  //     }
+  // }
+  // northwest = NULL;
+  // southeast = NULL;
+  // front = NULL;
+  // curr = NULL;
+  // row = NULL;
   
   // ImgNode* curr = northwest;
   // ImgNode* bottom = northwest->south;
