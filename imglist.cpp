@@ -356,7 +356,11 @@ void ImgList::Carve(int selectionmode) {
 *       the size of the gap.
 */
 void ImgList::Carve(unsigned int rounds, int selectionmode) {
-  for (unsigned int x = 0; x < rounds; x++) {
+  unsigned int newRounds = rounds;
+  if (rounds > GetDimensionX() - 2) {
+    newRounds = GetDimensionX() - 2;
+  }
+  for (unsigned int x = 0; x < newRounds; x++) {
     Carve(selectionmode);
   }
 }
@@ -436,13 +440,13 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
             double avgLum;
             double avgAlp;
             double sumHue = (curr->colour.h + curr->east->colour.h); // if curr->west == NULL then can't call curr->west->colour
-            while (sumHue > 360) {
+            while (sumHue >= 360) {
               sumHue -= 360;
             }
             avgHue = sumHue / 2;
-            avgSat = curr->east->colour.s + curr->colour.s / 2;
-            avgLum = curr->east->colour.l + curr->colour.l / 2;
-            avgAlp = curr->east->colour.a + curr->colour.a / 2;
+            avgSat = (curr->east->colour.s + curr->colour.s) / 2;
+            avgLum = (curr->east->colour.l + curr->colour.l) / 2;
+            avgAlp = (curr->east->colour.a + curr->colour.a) / 2;
             
           HSLAPixel* average = new HSLAPixel(avgHue, avgSat, avgLum, avgAlp);
           while (skip > 0) { 
