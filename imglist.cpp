@@ -401,6 +401,7 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
       int y = 0;
       while (run) {
           HSLAPixel* pixel = new HSLAPixel(curr->colour.h, curr->colour.s, curr->colour.l, curr->colour.a);
+          cout << curr->colour.h << endl;
           //HSLAPixel* = NULL;
           *outpng.getPixel(x, y) = *pixel;
           unsigned int skip = curr->skipright;
@@ -501,30 +502,30 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
 */
 void ImgList::Clear() {
   // add your implementation here
-  // ImgNode* curr = northwest;
-  // ImgNode* front = northwest->east;
-  // ImgNode* row = northwest->south;
-  // bool run = true;
-  // while (run) {
-  //     if (front == NULL && row == NULL) {
-  //       delete curr;
-  //       run = false;
-  //     } else if (front == NULL) {
-  //       delete(curr);
-  //       curr = row;
-  //       row = row->south;
-  //       front = curr->east;
-  //     } else {
-  //       delete(curr);
-  //       curr = front;
-  //       front = front->east;
-  //     }
-  // }
-  // northwest = NULL;
-  // southeast = NULL;
-  // front = NULL;
-  // curr = NULL;
-  // row = NULL;
+  ImgNode* curr = northwest;
+  ImgNode* front = northwest->east;
+  ImgNode* row = northwest->south;
+  bool run = true;
+  while (run) {
+      if (front == NULL && row == NULL) {
+        delete curr;
+        run = false;
+      } else if (front == NULL) {
+        delete(curr);
+        curr = row;
+        row = row->south;
+        front = curr->east;
+      } else {
+        delete(curr);
+        curr = front;
+        front = front->east;
+      }
+  }
+  northwest = NULL;
+  southeast = NULL;
+  front = NULL;
+  curr = NULL;
+  row = NULL;
   
   // ImgNode* curr = northwest;
   // ImgNode* bottom = northwest->south;
