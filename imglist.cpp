@@ -414,6 +414,7 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
               skip--;
             }
           }
+          delete pixel;
           curr = curr->east;
           x++;
           if (curr == NULL && row == NULL) {
@@ -434,6 +435,7 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
       while (run) {
           HSLAPixel* pixel = new HSLAPixel(curr->colour.h, curr->colour.s, curr->colour.l, curr->colour.a);
           *outpng.getPixel(x, y) = *pixel;
+          delete pixel;
           unsigned int skip = curr->skipright;
           if (skip != 0) {  
             double avgHue;
@@ -455,6 +457,7 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
               *outpng.getPixel(x, y) = *average;
               skip--;
             }
+            delete average;
           }
           curr = curr->east;
           x++;
@@ -478,6 +481,7 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
   while (run) {
       HSLAPixel* pixel = new HSLAPixel(curr->colour.h, curr->colour.s, curr->colour.l, curr->colour.a);
       *outpng.getPixel(x, y) = *pixel;
+          delete pixel;
       curr = curr->east;
       x++;
       if (curr == NULL && row == NULL) {
@@ -490,7 +494,6 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
       }
     }
   }
-
   return outpng;
 }
 
@@ -502,53 +505,53 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
 */
 void ImgList::Clear() {
   // add your implementation here
-  ImgNode* curr = northwest;
-  ImgNode* front = northwest->east;
-  ImgNode* row = northwest->south;
-  bool run = true;
-  while (run) {
-      if (front == NULL && row == NULL) {
-        delete curr;
-        run = false;
-      } else if (front == NULL) {
-        delete(curr);
-        curr = row;
-        row = row->south;
-        front = curr->east;
-      } else {
-        delete(curr);
-        curr = front;
-        front = front->east;
-      }
-  }
-  northwest = NULL;
-  southeast = NULL;
-  front = NULL;
-  curr = NULL;
-  row = NULL;
-  
   // ImgNode* curr = northwest;
-  // ImgNode* bottom = northwest->south;
-  // ImgNode* top = northwest->east;
-  //  while(curr->east != NULL && curr->south != NULL) {
-  //    if (bottom == NULL) {
-  //      // reset back to next col
-  //      delete(curr);
-  //      curr = top;
-  //      bottom = curr->south;
-  //      top = top->east;
-  //    } else {
-  //      // progress down in each row
-  //     delete(curr);
-  //     curr = bottom;
-  //     bottom = bottom->south;
-  //    }
-  //  }
-  //     // southeast
-  // delete(southeast);
+  // ImgNode* front = northwest->east;
+  // ImgNode* row = northwest->south;
+  // bool run = true;
+  // while (run) {
+  //     if (front == NULL && row == NULL) {
+  //       delete curr;
+  //       run = false;
+  //     } else if (front == NULL) {
+  //       delete(curr);
+  //       curr = row;
+  //       row = row->south;
+  //       front = curr->east;
+  //     } else {
+  //       delete(curr);
+  //       curr = front;
+  //       front = front->east;
+  //     }
+  // }
   // northwest = NULL;
   // southeast = NULL;
+  // front = NULL;
   // curr = NULL;
+  // row = NULL;
+  
+  // // ImgNode* curr = northwest;
+  // // ImgNode* bottom = northwest->south;
+  // // ImgNode* top = northwest->east;
+  // //  while(curr->east != NULL && curr->south != NULL) {
+  // //    if (bottom == NULL) {
+  // //      // reset back to next col
+  // //      delete(curr);
+  // //      curr = top;
+  // //      bottom = curr->south;
+  // //      top = top->east;
+  // //    } else {
+  // //      // progress down in each row
+  // //     delete(curr);
+  // //     curr = bottom;
+  // //     bottom = bottom->south;
+  // //    }
+  // //  }
+  // //     // southeast
+  // // delete(southeast);
+  // // northwest = NULL;
+  // // southeast = NULL;
+  // // curr = NULL;
   // bottom = NULL;
   // top = NULL;
   }
