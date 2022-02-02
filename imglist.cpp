@@ -505,31 +505,32 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
 */
 void ImgList::Clear() {
   // add your implementation here
-  // ImgNode* curr = northwest;
-  // ImgNode* front = northwest->east;
-  // ImgNode* row = northwest->south;
-  // bool run = true;
-  // while (run) {
-  //     if (front == NULL && row == NULL) {
-  //       delete curr;
-  //       run = false;
-  //     } else if (front == NULL) {
-  //       delete(curr);
-  //       curr = row;
-  //       row = row->south;
-  //       front = curr->east;
-  //     } else {
-  //       delete(curr);
-  //       curr = front;
-  //       front = front->east;
-  //     }
-  // }
-  // northwest = NULL;
-  // southeast = NULL;
-  // front = NULL;
-  // curr = NULL;
-  // row = NULL;
-  
+  if (northwest != NULL && southeast != NULL) {
+  ImgNode* curr = northwest;
+  ImgNode* front = northwest->east;
+  ImgNode* row = northwest->south;
+  bool run = true;
+  while (run) {
+      if (front == NULL && row == NULL) {
+        delete curr;
+        run = false;
+      } else if (front == NULL) {
+        delete(curr);
+        curr = row;
+        row = row->south;
+        front = curr->east;
+      } else {
+        delete(curr);
+        curr = front;
+        front = front->east;
+      }
+  }
+  northwest = NULL;
+  southeast = NULL;
+  front = NULL;
+  curr = NULL;
+  row = NULL;
+  }
   // // ImgNode* curr = northwest;
   // // ImgNode* bottom = northwest->south;
   // // ImgNode* top = northwest->east;
