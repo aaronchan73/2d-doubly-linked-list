@@ -333,8 +333,8 @@ void ImgList::Carve(int selectionmode) {
       select->south->skipup += (select->skipup) + 1;
       select->north->skipdown += (select->skipdown) + 1;
     }
-    select->west->skipright = 1;
-    select->east->skipleft = 1;
+    select->west->skipright += 1;
+    select->east->skipleft += 1;
     delete(select);
     select = NULL;
     row = row->south;
@@ -420,11 +420,6 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
           if (curr == NULL && row == NULL) {
             run = false;
           } else if (curr == NULL) {
-            if (GetDimensionFullX() == x) {
-              cout << "true" << endl;
-            } else {
-              cout << "false" << endl;
-            }
             curr = row;
             row = row->south;
             y++;

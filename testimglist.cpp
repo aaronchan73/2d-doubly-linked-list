@@ -202,3 +202,50 @@ void TestRenderMode2() {
     cout << "Input PNG image not read. Exiting..." << endl;
   }
 }
+
+void TestRenderMode0() {
+  cout << "Entered TestRenderMode2 function" << endl;
+
+  PNG inimg;
+  inimg.readFromFile("input-images/6x6grad.png");
+
+  if (inimg.height() == 6 && inimg.width() == 6) {
+    cout << "Input PNG 6x6.png successfully read." << endl;
+    cout << "Creating ImgList object using input PNG... ";
+    ImgList list6x6(inimg);
+    cout << "done." << endl;
+
+    cout << "Attempting to carve more pixels than allowable in mode 0... ";
+    list6x6.Carve(12, 0);
+    cout << "done." << endl;
+
+    cout << "Determining physical node dimensions of carved image... ";
+    unsigned int postcarvex = list6x6.GetDimensionX();
+    unsigned int postcarvey = list6x6.GetDimensionY();
+    cout << "done." << endl;
+
+    cout << "Expected horizontal dimension: 2" << endl;
+    cout << "Your horizontal dimension: " << postcarvex << endl;
+
+    cout << "Rendering carved image using rendermode 0... ";
+    PNG outputimg1 = list6x6.Render(false, 0);
+    cout << "done." << endl;
+
+    cout << "Writing output PNG to 6x6-0-0.png... ";
+    outputimg1.writeToFile("output-images/6x6-0-0.png");
+    cout << "done." << endl;
+
+    cout << "Rendering carved image using rendermode 1 and fillmode 2... ";
+    PNG outputimg2 = list6x6.Render(true, 0);
+    cout << "done." << endl;
+
+    cout << "Writing output PNG to 6x6-1-2.png... ";
+    outputimg2.writeToFile("output-images/6x6-1-2.png");
+    cout << "done." << endl;
+
+    cout << "Exiting TestRenderMode2 function" << endl;
+  }
+  else {
+    cout << "Input PNG image not read. Exiting..." << endl;
+  }
+}
