@@ -15,14 +15,16 @@ using namespace cs221util;
 void TestConstructorRender();
 void TestCarveMode0();
 void TestRenderMode2();
+void TestRender();
 
 int main(void) {
 
   // call the various test functions
   // you may comment and uncomment these as needed
-  TestConstructorRender();
-  TestCarveMode0();
-  TestRenderMode2();
+  // TestConstructorRender();
+  // TestCarveMode0();
+  // TestRenderMode2();
+  TestRender();
 
   return 0;
 }
@@ -52,6 +54,23 @@ void TestConstructorRender() {
   else {
     cout << "Input PNG image not read. Exiting..." << endl;
   }
+}
+
+void TestRender() {
+  
+  PNG img;
+  img.readFromFile("input-images/6x6grad.png");
+  
+  img.resize(4,4);
+  ImgList list4x4(img);
+  list4x4.Carve(2, 1);
+  cout << list4x4.GetDimensionX() << endl;
+  cout << list4x4.GetDimensionY() << endl;
+  PNG outimg = list4x4.Render(true, 0);
+  cout << outimg.width() << endl;
+  cout << outimg.height() << endl;
+  outimg.writeToFile("output-images/4x4-1-0.png");
+  
 }
 
 void TestCarveMode0() {
