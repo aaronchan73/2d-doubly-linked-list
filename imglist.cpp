@@ -420,6 +420,11 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
           if (curr == NULL && row == NULL) {
             run = false;
           } else if (curr == NULL) {
+            if (GetDimensionFullX() == x) {
+              cout << "true" << endl;
+            } else {
+              cout << "false" << endl;
+            }
             curr = row;
             row = row->south;
             y++;
