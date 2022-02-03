@@ -365,6 +365,33 @@ void ImgList::Carve(unsigned int rounds, int selectionmode) {
   }
 }
 
+double check360(double hue) {
+    double ans = hue;
+    if (hue >= 360) {
+      ans = hue - 360;
+    }
+    return ans;
+}
+
+double averageHue(double hue1, double hue2) {
+
+  double hueMax = fmax(hue1, hue2);
+  double hueMin = fmin(hue1, hue2);
+  double ans = 0;
+  hueMax = check360(hueMax);
+  hueMin = check360(hueMin);
+  double angle1 = fabs(hueMax - hueMin);
+  double angle2 = fabs(angle1 - 360);
+  double minAngle = min(angle1, angle2);
+  double midpoint = minAngle / 2;
+  if (check360(hueMax - midpoint) == check360(hueMin + midpoint)) {
+    ans = check360(hueMax - midpoint);
+  } else if (check360(hueMax + midpoint) == check360(hueMin - midpoint)) {
+    ans = check360(hueMax + midpoint);
+  }
+  return ans;
+}
+
 /*
 * Renders this list's pixel data to a PNG, with or without filling gaps caused by carving.
 * PRE: fillmode is an integer in the range of [0,2]
@@ -426,52 +453,47 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
             x = 0;
         }
       }
-    }
-    // } else if (fillmode == 1) { // TODO
-    //   ImgNode* curr = northwest;
-    //   ImgNode* row = northwest->south;
-    //   bool run = true;
-    //   int x = 0;
-    //   int y = 0;
-    //   while (run) {
-    //       HSLAPixel* pixel = new HSLAPixel(curr->colour.h, curr->colour.s, curr->colour.l, curr->colour.a);
-    //       *outpng.getPixel(x, y) = *pixel;
-    //       delete pixel;
-    //       unsigned int skip = curr->skipright;
-    //       if (skip != 0) {  
-    //         double avgHue;
-    //         double avgSat;
-    //         double avgLum;
-    //         double avgAlp;
-    //         double sumHue = (curr->colour.h + curr->east->colour.h); // if curr->west == NULL then can't call curr->west->colour
-    //         while (sumHue >= 360) {
-    //           sumHue -= 360;
-    //         }
-    //         avgHue = sumHue / 2;
-    //         avgSat = (curr->east->colour.s + curr->colour.s) / 2;
-    //         avgLum = (curr->east->colour.l + curr->colour.l) / 2;
-    //         avgAlp = (curr->east->colour.a + curr->colour.a) / 2;
+    } else if (fillmode == 1) { // TODO
+      ImgNode* curr = northwest;
+      ImgNode* row = northwest->south;
+      bool run = true;
+      int x = 0;
+      int y = 0;
+      while (run) {
+          HSLAPixel* pixel = new HSLAPixel(curr->colour.h, curr->colour.s, curr->colour.l, curr->colour.a);
+          *outpng.getPixel(x, y) = *pixel;
+          delete pixel;
+          unsigned int skip = curr->skipright;
+          if (skip != 0) {  
+            double avgHue;
+            double avgSat;
+            double avgLum;
+            double avgAlp;
+            avgHue = averageHue(curr->colour.h, curr->east->colour.h);
+            avgSat = (curr->east->colour.s + curr->colour.s) / 2;
+            avgLum = (curr->east->colour.l + curr->colour.l) / 2;
+            avgAlp = (curr->east->colour.a + curr->colour.a) / 2;
             
-    //       HSLAPixel* average = new HSLAPixel(avgHue, avgSat, avgLum, avgAlp);
-    //       while (skip > 0) { 
-    //           x++;
-    //           *outpng.getPixel(x, y) = *average;
-    //           skip--;
-    //         }
-    //         delete average;
-    //       }
-    //       curr = curr->east;
-    //       x++;
-    //       if (curr == NULL && row == NULL) {
-    //         run = false;
-    //       } else if (curr == NULL) {
-    //         curr = row;
-    //         row = row->south;
-    //         y++;
-    //         x = 0;
-    //     }
-    //   }
-    // }
+          HSLAPixel* average = new HSLAPixel(avgHue, avgSat, avgLum, avgAlp);
+          while (skip > 0) { 
+              x++;
+              *outpng.getPixel(x, y) = *average;
+              skip--;
+            }
+            delete average;
+          }
+          curr = curr->east;
+          x++;
+          if (curr == NULL && row == NULL) {
+            run = false;
+          } else if (curr == NULL) {
+            curr = row;
+            row = row->south;
+            y++;
+            x = 0;
+        }
+      }
+    }
   } else { // fillgaps == false
   outpng.resize(GetDimensionX(), GetDimensionY());
   ImgNode* curr = northwest;
@@ -557,6 +579,9 @@ void ImgList::Clear() {
   // bottom = NULL;
   // top = NULL;
   }
+
+
+
 
 /* ************************
 *  * OPTIONAL - FOR BONUS *
