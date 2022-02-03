@@ -16,15 +16,17 @@ void TestConstructorRender();
 void TestCarveMode0();
 void TestRenderMode2();
 void TestRender();
+void TestRenderMode0();
 
 int main(void) {
 
   // call the various test functions
   // you may comment and uncomment these as needed
-  // TestConstructorRender();
-  // TestCarveMode0();
-  // TestRenderMode2();
+  TestConstructorRender();
+  TestCarveMode0();
+  TestRenderMode2();
   TestRender();
+  TestRenderMode0();
 
   return 0;
 }
@@ -216,7 +218,7 @@ void TestRenderMode0() {
     cout << "done." << endl;
 
     cout << "Attempting to carve more pixels than allowable in mode 0... ";
-    list6x6.Carve(12, 0);
+    list6x6.Carve(3, 0);
     cout << "done." << endl;
 
     cout << "Determining physical node dimensions of carved image... ";
@@ -236,11 +238,11 @@ void TestRenderMode0() {
     cout << "done." << endl;
 
     cout << "Rendering carved image using rendermode 1 and fillmode 2... ";
-    PNG outputimg2 = list6x6.Render(true, 0);
+    PNG outputimg2 = list6x6.Render(true, 1);
     cout << "done." << endl;
 
-    cout << "Writing output PNG to 6x6-1-2.png... ";
-    outputimg2.writeToFile("output-images/6x6-1-2.png");
+    cout << "Writing output PNG to 6x6-1-1.png... ";
+    outputimg2.writeToFile("output-images/6x6-1-1.png");
     cout << "done." << endl;
 
     cout << "Exiting TestRenderMode2 function" << endl;

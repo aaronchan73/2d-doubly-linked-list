@@ -367,14 +367,15 @@ void ImgList::Carve(unsigned int rounds, int selectionmode) {
 
 double check360(double hue) {
     double ans = hue;
-    if (hue >= 360) {
+    if (hue < 0) {
+      ans = 360 + hue;
+    } else if (hue >= 360) {
       ans = hue - 360;
     }
     return ans;
 }
 
 double averageHue(double hue1, double hue2) {
-
   double hueMax = fmax(hue1, hue2);
   double hueMin = fmin(hue1, hue2);
   double ans = 0;
@@ -382,12 +383,18 @@ double averageHue(double hue1, double hue2) {
   hueMin = check360(hueMin);
   double angle1 = fabs(hueMax - hueMin);
   double angle2 = fabs(angle1 - 360);
-  double minAngle = min(angle1, angle2);
+  double minAngle = fmin(angle1, angle2);
   double midpoint = minAngle / 2;
-  if (check360(hueMax - midpoint) == check360(hueMin + midpoint)) {
+  // if (check360(hueMax - midpoint) == check360(hueMin + midpoint)) {
+  //   ans = check360(hueMax - midpoint);
+  // } else if (check360(hueMax + midpoint) == check360(hueMin - midpoint)) {
+  //   ans = check360(hueMax + midpoint);
+  // }
+
+  if (angle1 > 180) {
+    ans = check360((hue1 + hue2) / 2 - 180); 
+  } else {
     ans = check360(hueMax - midpoint);
-  } else if (check360(hueMax + midpoint) == check360(hueMin - midpoint)) {
-    ans = check360(hueMax + midpoint);
   }
   return ans;
 }
@@ -469,6 +476,31 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
             double avgSat;
             double avgLum;
             double avgAlp;
+//             if (curr->colour.h < 180) {
+// int rightside = curr->colour.h;
+// } else if (curr->colour.h > 180) {
+// int leftside = curr->colour.h;
+// } 
+
+// if (curr->east->colour.h < 180) {
+// int rightside = curr->east->colour.h;
+// } else if (curr->east->h > 180) {
+// int leftside = curr->east->colour.h;
+// } 
+
+// if (rightside - 0 < 360 - leftside) {
+// int sumHue = (rightside + leftside + 360) / 2;
+// } else if (rightside - 0 > 360 - leftside) {
+// int sumHue = (rightside + leftside - 360) / 2;
+// } else if (rightside - 0 == 360 - leftside) {
+// 	if (rightside + leftside >= 360) {
+// 	int sumHue = (rightside + leftside - 360) / 2;
+// 	} else {
+// 	int sumHue = (rightside + leftside) / 2;
+// } else {
+// 	int sumHue = (curr->colour.h +  curr->east->colour.h) / 2
+// }
+// }
             avgHue = averageHue(curr->colour.h, curr->east->colour.h);
             avgSat = (curr->east->colour.s + curr->colour.s) / 2;
             avgLum = (curr->east->colour.l + curr->colour.l) / 2;
