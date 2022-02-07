@@ -385,12 +385,6 @@ double averageHue(double hue1, double hue2) {
   double angle2 = fabs(angle1 - 360);
   double minAngle = fmin(angle1, angle2);
   double midpoint = minAngle / 2;
-  // if (check360(hueMax - midpoint) == check360(hueMin + midpoint)) {
-  //   ans = check360(hueMax - midpoint);
-  // } else if (check360(hueMax + midpoint) == check360(hueMin - midpoint)) {
-  //   ans = check360(hueMax + midpoint);
-  // }
-
   if (angle1 > 180) {
     ans = check360((hue1 + hue2) / 2 - 180); 
   } else {
@@ -436,12 +430,10 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
       while (run) {
           HSLAPixel* pixel = new HSLAPixel(curr->colour.h, curr->colour.s, curr->colour.l, curr->colour.a);
           cout << curr->colour.h << endl;
-          //HSLAPixel* = NULL;
           *outpng.getPixel(x, y) = *pixel;
           int skip = curr->skipright;
           if (skip != 0) {
           HSLAPixel* leftColour = pixel;
-          //leftColour = NULL;
           while (skip > 0) { 
               x++;
               *outpng.getPixel(x, y) = *leftColour;
@@ -476,31 +468,6 @@ PNG ImgList::Render(bool fillgaps, int fillmode) const {
             double avgSat;
             double avgLum;
             double avgAlp;
-//             if (curr->colour.h < 180) {
-// int rightside = curr->colour.h;
-// } else if (curr->colour.h > 180) {
-// int leftside = curr->colour.h;
-// } 
-
-// if (curr->east->colour.h < 180) {
-// int rightside = curr->east->colour.h;
-// } else if (curr->east->h > 180) {
-// int leftside = curr->east->colour.h;
-// } 
-
-// if (rightside - 0 < 360 - leftside) {
-// int sumHue = (rightside + leftside + 360) / 2;
-// } else if (rightside - 0 > 360 - leftside) {
-// int sumHue = (rightside + leftside - 360) / 2;
-// } else if (rightside - 0 == 360 - leftside) {
-// 	if (rightside + leftside >= 360) {
-// 	int sumHue = (rightside + leftside - 360) / 2;
-// 	} else {
-// 	int sumHue = (rightside + leftside) / 2;
-// } else {
-// 	int sumHue = (curr->colour.h +  curr->east->colour.h) / 2
-// }
-// }
             avgHue = averageHue(curr->colour.h, curr->east->colour.h);
             avgSat = (curr->east->colour.s + curr->colour.s) / 2;
             avgLum = (curr->east->colour.l + curr->colour.l) / 2;
@@ -586,30 +553,6 @@ void ImgList::Clear() {
   curr = NULL;
   row = NULL;
   }
-  // // ImgNode* curr = northwest;
-  // // ImgNode* bottom = northwest->south;
-  // // ImgNode* top = northwest->east;
-  // //  while(curr->east != NULL && curr->south != NULL) {
-  // //    if (bottom == NULL) {
-  // //      // reset back to next col
-  // //      delete(curr);
-  // //      curr = top;
-  // //      bottom = curr->south;
-  // //      top = top->east;
-  // //    } else {
-  // //      // progress down in each row
-  // //     delete(curr);
-  // //     curr = bottom;
-  // //     bottom = bottom->south;
-  // //    }
-  // //  }
-  // //     // southeast
-  // // delete(southeast);
-  // // northwest = NULL;
-  // // southeast = NULL;
-  // // curr = NULL;
-  // bottom = NULL;
-  // top = NULL;
   }
 
 
